@@ -1,111 +1,194 @@
-import 'dart:io';
-
 import 'package:book_app/common/constant.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:book_app/modules/home/controller/home_controller.dart';
+import 'package:book_app/modules/liked/controller/liked_book_controller.dart';
+import 'package:book_app/modules/liked/screen/detail_liked_book_screen.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends GetView<HomeController> {
   const HomeScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Column(
-        children: [
-          Container(
-            margin: const EdgeInsets.fromLTRB(16, 16, 16, 4),
-            padding: const EdgeInsets.all(8),
-            width: MediaQuery.of(context).size.width,
-            height: MediaQuery.of(context).size.height / 16,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(20),
-              border: Border.all(color: Colors.grey.shade300),
-            ),
-            child: Row(
-              children: [
-                Icon(
-                  Platform.isIOS ? CupertinoIcons.search : Icons.search,
-                  color: Colors.black54,
-                ),
-                const SizedBox(width: 10),
-                Expanded(
-                  child: TextField(
-                    textAlign: TextAlign.center,
-                    onChanged: (value) {},
-                    autofocus: false,
-                    decoration:
-                        const InputDecoration.collapsed(hintText: "Search"),
-                    cursorColor: primaryColor,
+      body: SafeArea(
+        child: Obx(
+          () => controller.isDataLoading.isTrue
+              ? const Center(
+                  child: CircularProgressIndicator(
+                    color: primaryColor,
                   ),
+                )
+              : Column(
+                  children: [
+                    SearchBook(
+                      controller: controller,
+                    ),
+                    const Divider(thickness: 1, indent: 16, endIndent: 16),
+                    ListBook(controller: controller)
+                  ],
                 ),
-                Icon(
-                  Platform.isIOS
-                      ? CupertinoIcons.slider_horizontal_3
-                      : Icons.menu_rounded,
-                  color: Colors.black54,
-                ),
-              ],
+        ),
+      ),
+    );
+  }
+}
+
+//This widget is for search the books by name
+class SearchBook extends StatelessWidget {
+  const SearchBook({super.key, required this.controller});
+
+  final HomeController controller;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      margin: const EdgeInsets.fromLTRB(16, 16, 16, 4),
+      padding: const EdgeInsets.all(8),
+      width: MediaQuery.of(context).size.width,
+      height: MediaQuery.of(context).size.height / 16,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(color: Colors.grey.shade300),
+      ),
+      child: Row(
+        children: [
+          Icon(
+            Icons.search,
+            color: Colors.black54,
+          ),
+          const SizedBox(width: 10),
+          Expanded(
+            child: TextField(
+              textAlign: TextAlign.center,
+              onChanged: (value) {
+                controller.searchText = value;
+              },
+              autofocus: false,
+              decoration: const InputDecoration.collapsed(hintText: "Search"),
+              cursorColor: primaryColor,
             ),
           ),
-          const Divider(thickness: 1, indent: 16, endIndent: 16),
-          Expanded(
-            child: ListView.separated(
-              itemBuilder: (context, index) {
-                return Container(
-                  margin: const EdgeInsets.only(left: 16, right: 16),
-                  padding: const EdgeInsets.all(8),
-                  height: MediaQuery.of(context).size.height / 8,
-                  width: MediaQuery.of(context).size.width,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(12),
-                    color: primaryGrayColor,
-                  ),
-                  child: Row(
-                    children: [
-                      Container(
-                        height: MediaQuery.of(context).size.height,
-                        width: MediaQuery.of(context).size.width / 5,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(8),
-                          color: whiteColor,
-                        ),
-                      ),
-                      const SizedBox(width: 8),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              "Judul Buku",
-                              style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 16,
-                              ),
-                            ),
-                            Text("Penulis"),
-                          ],
-                        ),
-                      ),
-                      IconButton(
-                        onPressed: () {},
-                        icon: Icon(
-                          Platform.isIOS
-                              ? CupertinoIcons.heart
-                              : Icons.favorite,
-                          color: Colors.black54,
-                        ),
-                      )
-                    ],
-                  ),
+          Icon(
+            Icons.menu_rounded,
+            color: Colors.black54,
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+// This widget is for showing the list of the books
+class ListBook extends StatelessWidget {
+  const ListBook({super.key, required this.controller});
+
+  final HomeController controller;
+
+  @override
+  Widget build(BuildContext context) {
+    final LikedBookController likedBookController =
+        Get.put(LikedBookController());
+    return Expanded(
+      child: ListView.separated(
+        itemBuilder: (context, index) {
+          final book = controller.book.results![index];
+          return Container(
+            margin: const EdgeInsets.only(left: 16, right: 16),
+            padding: const EdgeInsets.all(8),
+            height: MediaQuery.of(context).size.height / 8,
+            width: MediaQuery.of(context).size.width,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(12),
+              color: primaryGrayColor,
+            ),
+            child: InkWell(
+              onTap: () {
+                Get.to(
+                  () => const DetailLikedBookScreen(),
+                  arguments: book.id,
                 );
               },
-              separatorBuilder: (context, index) {
-                return const SizedBox(height: 8);
-              },
-              itemCount: 10,
+              child: Row(
+                children: [
+                  Container(
+                    height: MediaQuery.of(context).size.height,
+                    width: MediaQuery.of(context).size.width / 5,
+                    decoration: BoxDecoration(
+                      color: whiteColor,
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: CachedNetworkImage(
+                      imageUrl: book.formats!.imageJpeg ?? '',
+                      imageBuilder: (context, imageProvider) {
+                        return Container(
+                          // margin: const EdgeInsets.all(8),
+                          height: MediaQuery.of(context).size.height,
+                          width: MediaQuery.of(context).size.width / 5,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(8),
+                            image: DecorationImage(
+                              image: imageProvider,
+                              fit: BoxFit.contain,
+                            ),
+                          ),
+                        );
+                      },
+                      placeholder: (context, url) {
+                        return const SizedBox.shrink();
+                      },
+                      errorWidget: (context, url, error) {
+                        return const SizedBox.shrink();
+                      },
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          "${controller.filteredBooks[index].title}",
+                          overflow: TextOverflow.ellipsis,
+                          style: const TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16,
+                          ),
+                        ),
+                        Text(controller.filteredBooks[index].authors
+                                ?.map((author) => author.name)
+                                .join(', ') ??
+                            ''),
+                      ],
+                    ),
+                  ),
+                  IconButton(
+                    onPressed: () {
+                      if (likedBookController.likedBooks.contains(book)) {
+                        likedBookController.unlikeBooks(book);
+                      } else {
+                        likedBookController.likeBooks(book);
+                      }
+                    },
+                    icon: Obx(() => Icon(
+                          likedBookController.likedBooks.contains(book)
+                              ? Icons.favorite
+                              : Icons.favorite_border,
+                          color: likedBookController.likedBooks.contains(book)
+                              ? Colors.red
+                              : Colors.black,
+                        )),
+                  )
+                ],
+              ),
             ),
-          )
-        ],
+          );
+        },
+        separatorBuilder: (context, index) {
+          return const SizedBox(height: 8);
+        },
+        itemCount: controller.filteredBooks.length,
       ),
     );
   }
