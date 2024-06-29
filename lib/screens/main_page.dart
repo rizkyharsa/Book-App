@@ -11,9 +11,7 @@ class MainPage extends GetView<MainPageController> {
   Widget build(context) {
     return Scaffold(
         body: Obx(
-          () => SafeArea(
-            child: controller.page[controller.currentPage.value],
-          ),
+          () => controller.page[controller.currentPage.value],
         ),
         bottomNavigationBar: GNav(
           onTabChange: (value) {

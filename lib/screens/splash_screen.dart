@@ -32,31 +32,29 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SafeArea(
-        child: Stack(
-          fit: StackFit.expand,
-          children: [
-            Container(
-              height: double.infinity,
-              width: double.infinity,
-              decoration: const BoxDecoration(
-                color: fourthColor,
-              ),
+      body: Stack(
+        fit: StackFit.expand,
+        children: [
+          Container(
+            height: double.infinity,
+            width: double.infinity,
+            decoration: const BoxDecoration(
+              color: fourthColor,
             ),
-            Align(
-              alignment: Alignment.center,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Image.asset(
-                    "assets/images/BOOK APP.png",
-                    scale: 1,
-                  )
-                ],
-              ),
-            )
-          ],
-        ),
+          ),
+          Align(
+            alignment: Alignment.center,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Image.asset(
+                  "assets/images/BOOK APP.png",
+                  scale: 1,
+                )
+              ],
+            ),
+          )
+        ],
       ),
     );
   }

@@ -1,5 +1,8 @@
 import 'package:book_app/common/constant.dart';
 import 'package:book_app/controller/main_page_controller.dart';
+import 'package:book_app/modules/home/controller/detail_book_controller.dart';
+import 'package:book_app/modules/home/controller/home_controller.dart';
+import 'package:book_app/modules/liked/controller/liked_book_controller.dart';
 import 'package:book_app/screens/splash_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -23,6 +26,7 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
+    SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
     return GetMaterialApp(
       title: "BOOK APP",
       debugShowCheckedModeBanner: false,
@@ -35,11 +39,12 @@ class MyApp extends StatelessWidget {
           return const SplashScreen();
         },
       ),
-      initialBinding: BindingsBuilder(
-        () {
-          Get.lazyPut(() => MainPageController(), fenix: true);
-        },
-      ),
+      initialBinding: BindingsBuilder(() {
+        Get.lazyPut(() => MainPageController(), fenix: true);
+        Get.lazyPut(() => HomeController(), fenix: true);
+        Get.lazyPut(() => DetailBookController(), fenix: true);
+        Get.lazyPut(() => LikedBookController(), fenix: true);
+      }),
     );
   }
 }
