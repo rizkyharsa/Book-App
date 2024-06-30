@@ -15,8 +15,8 @@ class Book {
 
   factory Book.fromJson(Map<String, dynamic> json) => Book(
         count: json["count"],
-        next: json["next"],
-        previous: json["previous"],
+        next: json["next"] ?? '',
+        previous: json["previous"] ?? '',
         results: json["results"] == null
             ? []
             : List<Result>.from(
