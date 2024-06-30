@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-const baseUrl = 'http://gutendex.com/books/';
+const baseUrl = 'https://gutendex.com/books';
 
 const primaryColor = Color(0xFF347571);
 const secondaryColor = Color(0xFFAB9A7D);
