@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:book_app/common/constant.dart';
 import 'package:book_app/modules/home/models/book.dart';
 import 'package:book_app/modules/home/models/result.dart';
@@ -18,8 +16,6 @@ class HomeRepository {
     } catch (e) {
       rethrow;
     }
-    // var res = await dio.get(baseUrl);
-    // return Book.fromJson(res.data['data']);
   }
 
   Future<Result> getDetailBook(var id) async {
@@ -33,49 +29,11 @@ class HomeRepository {
 
   Future<Book> searchBooks(String query) async {
     try {
-      final encodedQuery =
-          Uri.encodeQueryComponent(query.replaceAll(" ", "%20").toLowerCase());
+      final encodedQuery = Uri.encodeQueryComponent(query.toLowerCase());
       final response = await dio.get('$baseUrl/?search=$encodedQuery');
-      print('API Response: ${response.data}');
       return Book.fromJson(response.data);
     } catch (e) {
       rethrow;
     }
   }
-
-  // Future<List<Result>> getListofBook() async {
-  //   var res = await dio.get(baseUrl);
-  //     nextPage = res.data['next'];
-
-  //   if (res.statusCode == 200) {
-  //     final List rawData = jsonDecode(jsonEncode(res.data['results']));
-  //     return rawData.map((e) => Result.fromJson(e)).toList();
-  //   } else {
-  //     return [];
-  //   }
-  // }
-
-  // Future<List<Result>> getNextPage() async {
-  //   if (nextPage != null) {
-  //     final res = await dio.get(nextPage!);
-  //     nextPage = res.data['next'];
-  //     final List rawData = jsonDecode(jsonEncode(res.data['results']));
-  //     return rawData.map((e) => Result.fromJson(e)).toList();
-  //   } else {
-  //     return [];
-  //   }
-  // }
-
-  // Future<List<Book>> getBookData() async {
-  //   var res = await dio.get(baseUrl);
-  //   final resData = res.data as List;
-  //   return resData.map((json) => Book.fromJson(json)).toList();
-  // }
-
-  // try {
-  //     final response = await dio.get(baseUrl);
-  //     return Book.fromJson(response.data);
-  //   } catch (e) {
-  //     rethrow;
-  //   }
 }

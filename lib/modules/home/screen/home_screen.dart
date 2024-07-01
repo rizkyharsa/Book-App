@@ -58,7 +58,7 @@ class SearchBook extends StatelessWidget {
       ),
       child: Row(
         children: [
-          Icon(
+          const Icon(
             Icons.search,
             color: Colors.black54,
           ),
@@ -68,7 +68,6 @@ class SearchBook extends StatelessWidget {
               textAlign: TextAlign.center,
               onChanged: (value) {
                 controller.searchText.value = value;
-                print('Search Text: ${controller.searchText.value}');
                 if (value.isNotEmpty) {
                   controller.searchBooks();
                 }
@@ -78,7 +77,7 @@ class SearchBook extends StatelessWidget {
               cursorColor: primaryColor,
             ),
           ),
-          Icon(
+          const Icon(
             Icons.menu_rounded,
             color: Colors.black54,
           ),
@@ -119,13 +118,13 @@ class SearchResults extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Expanded(
-      child: ListView.builder(
-        itemCount: controller.searchResults.length,
-        itemBuilder: (context, index) => BookItem(
-          result: controller.searchResults[index],
-          likedBookController: Get.find<LikedBookController>(),
-        ),
-      ),
+      child: Obx(() => ListView.builder(
+            itemCount: controller.searchResults.length,
+            itemBuilder: (context, index) => BookItem(
+              result: controller.searchResults[index],
+              likedBookController: Get.find<LikedBookController>(),
+            ),
+          )),
     );
   }
 }

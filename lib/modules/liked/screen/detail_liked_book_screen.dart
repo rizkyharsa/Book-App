@@ -69,6 +69,7 @@ class DetailBook extends StatelessWidget {
     var books = controller.detailBook.value;
     return Expanded(
       child: Container(
+        padding: const EdgeInsets.only(left: 8, right: 8),
         height: height,
         width: width,
         decoration: const BoxDecoration(
@@ -197,7 +198,7 @@ class DetailBook extends StatelessWidget {
                   ],
                 ),
               ),
-            )
+            ),
           ],
         ),
       ),
